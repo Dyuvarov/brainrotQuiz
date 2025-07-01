@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Italian Brainrot Quiz</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f, #004d40, #0f0f0f);
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 100px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 24px rgba(0, 255, 140, 0.3);
+            text-align: center;
+        }
+
+        #quiz-image {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option {
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #1c1c1c;
+            color: #00ff9c;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #005f4b;
+            color: #ffffff;
+        }
+
+        .option.correct {
+            background-color: #26ff88;
+            color: #000;
+        }
+
+        .option.wrong {
+            background-color: #ff264d;
+            color: #000;
+        }
+
+        .score {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+<body>
+<div class="quiz-container">
+    <div id="quiz-image-container">
+        <img id="quiz-image" src="" alt="quiz" />
+    </div>
+    <div class="options" id="options"></div>
+    <div class="score" id="score">Score: 0/0</div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            image: "img/lirili.jpg",
+            correct: "Lirili Larila",
+            options: ["Frulli Frulla", "Lirili Larila", "Frigo Camello", "Tracotocutulo"]
+        },
+        {
+            image: "img/tralalero.jpg",
+            correct: "Tralalero tralala",
+            options: ["Tralalero tralala", "Trippi troppi", "Brr Brr patapim", "Vodka energy"]
+        },
+        {
+            image: "img/TrippiTroppi.jpg",
+            correct: "Trippi Troppi",
+            options: ["Brr Brr Patapim", "Girafa Calesete", "Trippi Troppi", "Bombardiro Crocodilo"]
+        },
+        {
+            image: "img/capuc.jpg",
+            correct: "Cappucino Assassino",
+            options: ["Tracotocutulo", "Brr Brr Patapim", "Bombobini Gusini", "Cappucino Assassino"]
+        },
+        {
+            image: "img/bobrini.jpg",
+            correct: "Bobrinni Kokokosinni",
+            options: ["Tung Tung Tung Sahur", "Frulli Frulla", "Bobrinni Kokokosinni", "Bombardiro Crocodilo"]
+        },
+        {
+            image: "img/bbrd.jpg",
+            correct: "Bombardiro Crocodilo",
+            options: ["Bombardiro Crocodilo", "Trippi troppi", "Frulli Frulla", "Bombobini Gusini", ]
+        },
+    ];
+
+    let current = 0;
+    let correctCount = 0;
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function renderQuestion() {
+        const question = quizData[current];
+        document.getElementById("quiz-image").src = question.image;
+
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+
+        const shuffledOptions = shuffle([...question.options]);
+
+        shuffledOptions.forEach((opt) => {
+            const btn = document.createElement("button");
+            btn.classList.add("option");
+            btn.textContent = opt;
+            btn.onclick = () => handleAnswer(opt === question.correct, btn);
+            optionsDiv.appendChild(btn);
+        });
+
+        updateScore();
+    }
+
+    function handleAnswer(isCorrect, button) {
+        const buttons = document.querySelectorAll(".option");
+        buttons.forEach(btn => btn.disabled = true);
+
+        if (isCorrect) {
+            button.classList.add("correct");
+            correctCount++;
+        } else {
+            button.classList.add("wrong");
+        }
+
+        current++;
+        setTimeout(() => {
+            if (current < quizData.length) {
+                renderQuestion();
+            } else {
+                document.getElementById("options").innerHTML = '<p style="font-size: 24px; font-weight: bold;">Quiz Complete!</p>';
+            }
+        }, 1000);
+    }
+
+    function updateScore() {
+        document.getElementById("score").textContent = `Score: ${correctCount}/${current}`;
+    }
+
+    renderQuestion();
+</script>
+</body>
+</html>
